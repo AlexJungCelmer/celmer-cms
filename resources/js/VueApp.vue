@@ -1,32 +1,6 @@
 <template>
   <div>
-    <p>
-      <router-link :to="{ name: 'login' }" style="color: black"
-        >Login</router-link
-      >
-    </p>
-    <p>
-      <router-link :to="{ name: 'app.list' }" style="color: black"
-        >list apps</router-link
-      >
-    </p>
-
-    <p>
-      <router-link :to="{ name: 'user.new' }" style="color: black"
-        >new user</router-link
-      >
-    </p>
-    <p>
-      <router-link :to="{ name: 'user.list' }" style="color: black"
-        >User list</router-link
-      >
-    </p>
-    <p>
-      <router-link :to="{ name: 'user.profile' }" style="color: black"
-        >Profile</router-link
-      >
-    </p>
-
+    <nav-bar v-if="$store.getters.isAuthenticated"></nav-bar>
     <main>
       <router-view></router-view>
     </main>
@@ -36,14 +10,42 @@
 <script>
 export default {
   created() {
-    if (axios.defaults.headers.common["Authorization"]) {
-      axios.get("/api/user").then((resp) => {
-        console.log(resp.data);
-      });
+    let vm = this;
+    axios.interceptors.response.use(
+      (response) => {
+        return response;
+      },
+      (error) => {
+        if (error.response.status === 401) {
+          this.$root.$bvToast.toast("You have no permission to access this", {
+            title: "Permission denied",
+            variant: "warning",
+            solid: true,
+          });
+        }
+        vm.$router.push({ name: "login" });
+        return error;
+      }
+    );
+
+    if (this.$store.getters.isAuthenticated == false) {
+      if (this.$route.name != "login") {
+        this.$router.push({ name: "login" });
+      }
+    } else {
+      if (this.$route.name != "app.list") {
+        this.$router.push({ name: "app.list" });
+      }
+    }
+    if (this.$store.getters.isAuthenticated) {
+      this.$store.dispatch("user").then((resp) => {});
+      this.$store.dispatch("getApplications").then((resp) => {});
     }
   },
 };
 </script>
 
-<style>
+<style lang="scss">
+@import "node_modules/bootstrap/scss/bootstrap.scss";
+@import "node_modules/bootstrap-vue/src/index.scss";
 </style>

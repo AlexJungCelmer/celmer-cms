@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'is_admin' => 0,
         ]);
 
-        \App\Models\Application::factory(20)->create();
-
+        $apps = \App\Models\Application::factory(20)->has(\App\Models\Collection::factory()->count(3))->create();
+        // $collections = ->for($apps)->create();
     }
 }

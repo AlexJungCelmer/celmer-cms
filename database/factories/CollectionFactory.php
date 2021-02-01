@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Application;
+use App\Models\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-class ApplicationFactory extends Factory
+class CollectionFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Application::class;
+    protected $model = Collection::class;
 
     /**
      * Define the model's default state.
@@ -22,10 +22,12 @@ class ApplicationFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->company;
         return [
-            'name' => $name,
-            'slug' => str_slug($name, '-'),
+            //sentence($nbWords = 6, $variableNbWords = true)
+            'name' => $this->faker->word(),
+            'label' => $this->faker->word(),
+            'fields' => "text",
+            'options' => '',
         ];
     }
 }

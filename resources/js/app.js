@@ -4,9 +4,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import store from './store/index'
+import { ToastPlugin } from 'bootstrap-vue'
 
 Vue.use(VueRouter)
-// Vue.use(Vuex)
+Vue.use(ToastPlugin)
 
 /** All general components */
 var files = require.context('./components', true, /\.vue$/i)

@@ -1,9 +1,11 @@
 <template>
   <div>
-    <form>
-      <input type="text" name="name" v-model="app.name" />
-    </form>
-    <button v-on:click="createApp()">send</button>
+    <div v-if="$store.state.user.user.is_admin">
+      <form>
+        <input type="text" name="name" v-model="app.name" />
+      </form>
+      <button v-on:click="createApp()">send</button>
+    </div>
   </div>
 </template>
 
@@ -14,13 +16,12 @@ export default {
       app: {
         name: "",
       },
-      resp: {},
     };
   },
 
   created() {
     let vm = this;
-    console.log(vm);
+
     if (vm.$route.params.slug != "") {
       axios.get("/api/apps/" + vm.$route.params.slug).then((resp) => {
         vm.app = resp.data;

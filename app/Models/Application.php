@@ -14,6 +14,11 @@ class Application extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function collections()
+    {
+        return $this->hasMany(Collection::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

@@ -1,10 +1,8 @@
 import axios from "axios";
 
-let teste = document.cookie.split(';')[0].split('=')[1];
-console.log(teste);
 const state = {
   status: '',
-  token: teste,
+  token: "",
   user: {}
 };
 
@@ -27,7 +25,6 @@ const mutations = {
     state.token = token;
   },
   setUser(state, user) {
-    state.status = 'success';
     state.user = user;
   },
   auth_error(state) {
@@ -50,7 +47,6 @@ const actions = {
       commit('auth_request')
       axios({ url: '/api/sanctum/token', data: toRequest, method: 'POST' })
         .then(resp => {
-          console.log("resp", resp);
           const token = 'Bearer ' + resp.data;
           document.cookie = "_token=" + token; '; path=/; expires=none; Secure; SameSite=Lax';
           axios.defaults.headers.common['Authorization'] = token;
@@ -65,11 +61,10 @@ const actions = {
     })
   },
 
-  user({ }) {
+  user({ commit }) {
     return new Promise((resolve, reject) => {
       axios.get("/api/user")
         .then((resp) => {
-          console.log('aqui', resp);
           commit('setUser', resp.data);
           resolve(resp);
         })

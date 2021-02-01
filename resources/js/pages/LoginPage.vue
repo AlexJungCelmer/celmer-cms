@@ -35,20 +35,10 @@ export default {
         password_confirmation: this.password_confirmation,
       };
       this.$store.dispatch("login", user).then((resp) => {
-        this.$store.dispatch("login").then((resp) =>{
-          console.log(resp.data);
+        this.$store.dispatch("user").then((resp) =>{
+          vm.$router.push({name: "apps.list"})
         });
       });
-      // axios.post("/api/sanctum/token", user).then((resp) => {
-      // console.log(resp.data);
-      // vm.token = resp.data;
-      // axios.defaults.headers.common["Authorization"] = "Bearer " + resp.data;
-      // document.cookie = "_token="+axios.defaults.headers.common["Authorization"];'; path=/; expires=none; Secure; SameSite=Lax';
-
-      // axios.get("/api/user").then((resp) => {
-      //   console.log(resp.data);
-      // });
-      // });
     },
   },
 };
