@@ -1,17 +1,75 @@
 <template>
   <div>
-    <form>
-      <input type="name" name="name" id="name" v-model="user.name"/>
-      <input type="email" name="email" id="email" v-model="user.email"/>
-      <input type="password" name="password" id="password" v-model="user.password"/>
-      <input
-        type="password"
-        name="password_confirmation"
-        id="password_confirmation"
-        v-model="user.password_confirmation"
-      />
-    </form>
-    <button v-on:click="createUser()">Make user</button>
+    <v-fab-transition>
+      <v-btn
+        v-if="$store.state.user.user.is_admin && $route.name != 'user.new'"
+        color="blue"
+        fab
+        dark
+        fixed
+        bottom
+        right
+        @click="reset"
+        :to="{ name: 'user.new' }"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </v-fab-transition>
+    <v-row align="center" justify="center">
+      <v-col>
+        <v-form ref="form" lazy-validation>
+          <v-text-field
+            v-model="user.name"
+            label="User name"
+            required
+            type="text"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="user.email"
+            :rules="emailRules"
+            label="E-mail"
+            required
+            type="email"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="user.password"
+            label="Password"
+            required
+            type="password"
+            v-if="!$route.params.slug"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="user.password_confirmation"
+            label="Password confirm"
+            required
+            type="password"
+            v-if="!$route.params.slug"
+          ></v-text-field>
+
+          <div
+            v-if="$route.params.slug != '' && applications.length"
+            class="list-applications"
+          >
+            <h3>Applications</h3>
+            <v-row align="center">
+              <v-col sm="2" v-for="app in applications" v-bind:key="app.id">
+                <v-checkbox
+                  v-model="user.selecteds"
+                  :label="app.name"
+                  :value="app.id"
+                ></v-checkbox>
+              </v-col>
+            </v-row>
+          </div>
+        </v-form>
+        <v-btn color="success" class="mr-4 mb-4" v-on:click="createUser()">{{
+          $route.params.slug ? "Update" : "Create"
+        }}</v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -20,24 +78,39 @@ export default {
   data() {
     return {
       user: {
-        name: "Alex celmer",
-        email: "asesaeas@dsdas.com",
-        password: "12345678",
-        password_confirmation: "12345678",
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation: "",
       },
+      applications: [],
+      emailRules: [
+        (v) => !!v || "E-mail is required",
+        (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+      ],
     };
   },
 
-  created(){
+  created() {
     let vm = this;
-    if(this.$route.params.slug != ""){
-      axios.get("/api/users/"+this.$route.params.slug).then(resp => {
+    axios.get("/api/apps").then((resp) => {
+      vm.applications = resp.data;
+    });
+    if (this.$route.params.slug) {
+      axios.get("/api/users/" + this.$route.params.slug).then((resp) => {
         vm.user = resp.data;
-      })
+        vm.user.selecteds = [];
+        vm.user.app.forEach((app) => {
+          vm.user.selecteds.push(app.id);
+        });
+      });
     }
   },
 
   methods: {
+    reset: function () {
+      this.$refs.form.reset();
+    },
     createUser: function () {
       let vm = this;
       axios.post("/register", vm.user).then((resp) => {
@@ -48,5 +121,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped lang="scss">
+div.list-applications {
+  margin: 25px 0;
+}
 </style>

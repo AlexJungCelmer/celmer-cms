@@ -46,7 +46,7 @@ class UsersController extends Controller
     {
         //
         $user = User::where('id', $request->id)->firstOrFail();
-        $user->app = $user->Application();
+        $user->app = $user->applications;
         return $user;
     }
 

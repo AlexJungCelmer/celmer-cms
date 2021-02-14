@@ -48,10 +48,10 @@
     <v-main>
       <!-- Provides the application the proper gutter -->
       <v-container fluid fill-height v-if="$route.name == 'login'">
-        <router-view></router-view>
+        <router-view :key="$route.fullPath"></router-view>
       </v-container>
       <v-container fluid else>
-        <router-view></router-view>
+        <router-view :key="$route.fullPath"></router-view>
       </v-container>
     </v-main>
 

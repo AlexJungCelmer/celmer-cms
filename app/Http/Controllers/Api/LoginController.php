@@ -36,7 +36,7 @@ class LoginController extends Controller
     public function user(Request $request)
     {
         $user = $request->user();
-        $user->Application();
+        $user->applications();
         $apps = $user->apps;
         if ($user->tokenCan('*')) {
             $user->can = ['admin' => true];
