@@ -1,5 +1,12 @@
 <template>
   <div>
+        <v-alert
+      border="top"
+      color="red lighten-2"
+      dark
+    >
+      I'm an alert with a top border and red color
+    </v-alert>
     <p>
       <router-link :class="($route.name == 'login' ? 'active' : '' )" :to="{ name: 'login' }">Login</router-link>
     </p>

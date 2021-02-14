@@ -2,7 +2,13 @@
   <div>
     <div v-if="$store.state.user.user.is_admin">
       <form>
-        <input type="text" name="name" v-model="app.name" />
+        <v-text-field
+          label="Application name"
+          required
+          type="text"
+          name="name"
+          v-model="app.name"
+        ></v-text-field>
       </form>
       <button v-on:click="createApp()">send</button>
     </div>
@@ -25,8 +31,9 @@ export default {
     if (vm.$route.params.slug != "") {
       axios.get("/api/apps/" + vm.$route.params.slug).then((resp) => {
         vm.app = resp.data;
-        console.log(resp);
       });
+    }else{
+      vm.$route.push({name: "app.list"})
     }
   },
 

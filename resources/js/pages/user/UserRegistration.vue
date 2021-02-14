@@ -28,6 +28,15 @@ export default {
     };
   },
 
+  created(){
+    let vm = this;
+    if(this.$route.params.slug != ""){
+      axios.get("/api/users/"+this.$route.params.slug).then(resp => {
+        vm.user = resp.data;
+      })
+    }
+  },
+
   methods: {
     createUser: function () {
       let vm = this;

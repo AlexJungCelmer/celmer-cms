@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\User::factory(10)->create();
         \App\Models\User::create([
             'name' => 'alex admin',
             'email' => 'alex.celmer@hotmail.com',
@@ -28,6 +27,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $apps = \App\Models\Application::factory(20)->has(\App\Models\Collection::factory()->count(3))->create();
-        // $collections = ->for($apps)->create();
+        $apps_user = \App\Models\User::factory(10)->has(\App\Models\Application::factory()->count(3))->create();
     }
 }

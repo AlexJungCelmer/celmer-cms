@@ -18,6 +18,12 @@ Route::post('/sanctum/token', 'LoginController@login');
 Route::post('/user/registration', 'LoginController@create');
 Route::get('/user', 'LoginController@user')->middleware('auth:sanctum');
 
+Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum', 'IsAdmin'], function($route){
+    Route::get("", 'UsersController@index');
+    Route::get("/{id}", 'UsersController@show');
+
+});
+
 Route::group(['prefix' => 'apps', 'middleware' => 'auth:sanctum'], function($route){
 
     Route::group(['prefix' => 'control'], function($e){

@@ -25,6 +25,11 @@ let routes = [
     component: userNew,
   },
   {
+    path: '/user/:slug',
+    name: 'user.edit',
+    component: userNew,
+  },
+  {
     path: '/user',
     name: 'user.list',
     component: userList,
@@ -36,22 +41,22 @@ let routes = [
   },
 
   {
-    path: '/apps',
+    path: '/applications',
     name: 'app.list',
     component: listApps,
   },
   {
-    path: '/apps/create',
+    path: '/application/create',
     name: 'app.new',
     component: createOrEdit,
   },
   {
-    path: '/apps/:slug',
+    path: '/application/:slug',
     name: 'app.edit',
     component: createOrEdit,
   },
   {
-    path: '/apps/:slug/collections',
+    path: '/application/:slug/collections',
     name: 'app.collections',
     component: listAppsCollections,
     beforeEnter: (to, from, next) => {

@@ -4,10 +4,18 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import store from './store/index'
-import { ToastPlugin } from 'bootstrap-vue'
 
+import '@mdi/font/css/materialdesignicons.css'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+
+const vuetify = new Vuetify({
+	icons: {
+		iconfont: 'mdiSvg',
+	},
+});
+Vue.use(Vuetify)
 Vue.use(VueRouter)
-Vue.use(ToastPlugin)
 
 /** All general components */
 var files = require.context('./components', true, /\.vue$/i)
@@ -31,5 +39,6 @@ const app = new Vue({
 	el: '#app',
 	components: { App },
 	router,
-	store
+	store,
+	vuetify
 })
