@@ -12,7 +12,7 @@
     </v-subheader>
     <v-spacer></v-spacer>
     <v-row dense v-if="apps.length">
-      <v-col :cols="appsPerCol" v-for="app in apps" v-bind:key="app.id" >
+      <v-col :cols="appsPerCol" v-for="app in apps" v-bind:key="app.id">
         <v-card elevation="4" outlined style="width: 95%" class="mb-5"
           ><v-img
             height="250"
@@ -21,6 +21,7 @@
           <v-card-title>{{ app.name }}</v-card-title>
           <v-card-actions>
             <v-btn
+              v-if="isUserInScope('application')"
               color="deep-purple lighten-2"
               text
               :to="{ name: 'app.edit', params: { slug: app.slug } }"
@@ -28,6 +29,7 @@
               Edit
             </v-btn>
             <v-btn
+              v-if="isUserInScope('collection:view')"
               color="deep-purple lighten-2"
               text
               :to="{ name: 'app.collections', params: { slug: app.slug } }"
@@ -55,6 +57,10 @@ export default {
       search: "",
       appsPerCol: 3,
     };
+  },
+
+  created() {
+    console.log('created', this, this.user_scopes);
   },
 
   computed: {

@@ -3,14 +3,14 @@
     <v-navigation-drawer
       v-model="drawer"
       app
-      v-if="this.$store.getters.isAuthenticated"
+      v-if="$store.getters.isAuthenticated"
     >
       <v-sheet color="grey lighten-4" class="pa-4">
         <v-avatar class="mb-4" color="blue darken-1" size="64">
           <span class="white--text headline">{{
             (
-              this.$store.state.user.user.name[0] +
-              this.$store.state.user.user.name.split(" ")[1][0]
+              $store.state.user.user.name[0] +
+              $store.state.user.user.name.split(" ")[1][0]
             ).toUpperCase()
           }}</span>
         </v-avatar>
@@ -18,7 +18,7 @@
         <div>
           Hello
           <span style="text-transform: capitalize; font-weight: bold">{{
-            this.$store.state.user.user.name.split(" ")[0]
+            $store.state.user.user.name.split(" ")[0]
           }}</span>
           what's up?
         </div>

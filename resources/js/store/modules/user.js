@@ -26,6 +26,7 @@ const mutations = {
   },
   setUser(state, user) {
     state.user = user;
+    this._vm.user_scopes = user.can;
   },
   auth_error(state) {
     state.status = 'error'

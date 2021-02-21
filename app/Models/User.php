@@ -12,11 +12,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public function applications()
-    {
-        return $this->belongsToMany(Application::class);
-    }
-
     /**
      * The attributes that are mass assignable.
      *
@@ -36,6 +31,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'pivot',
     ];
 
     /**
@@ -46,4 +42,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function applications()
+    {
+        return $this->belongsToMany(Application::class);
+    }
 }

@@ -2,8 +2,8 @@ require('./bootstrap')
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Vuex from 'vuex'
 import store from './store/index'
+import UserController from './plugins/UserController'
 
 import '@mdi/font/css/materialdesignicons.css'
 import Vuetify from 'vuetify'
@@ -16,6 +16,17 @@ const vuetify = new Vuetify({
 });
 Vue.use(Vuetify)
 Vue.use(VueRouter)
+Vue.use(UserController, {
+	scopes: {
+		application: [
+			'application',
+			'profile',
+			'collection:view',
+			'collection:data',
+		],
+		user: store.state.user.user.can
+	}
+});
 
 /** All general components */
 var files = require.context('./components', true, /\.vue$/i)

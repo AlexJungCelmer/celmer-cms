@@ -21,14 +21,10 @@ class ApplicationController extends Controller
         if ($user->tokenCan('*')) {
             return Application::get();
         } else {
-            $abilities = $user->tokens[count($user->tokens) - 1]->abilities;
-            return Application::whereIn('slug', $abilities)->get();
-            // $apps = [];
-            // foreach ($abilities as $ability) {
-            //     // return $ability;
-            //     $apps[] = Application::where('slug', $ability)->first();
-            // }
-            // return $apps;
+            if( $user->tokenCan('application') ){
+                return $user->applications()->get();
+            }
+            // return Application::whereIn('slug', $abilities)->get();
         }
     }
 
@@ -59,6 +55,7 @@ class ApplicationController extends Controller
         if ($user->tokenCan('*') && $user->is_admin) {
             return Application::where('slug', $request->slug)->firstOrFail()->with('users')->firstOrFail();
         }
+        
         return Application::where('slug', $request->slug)->firstOrFail();
     }
 

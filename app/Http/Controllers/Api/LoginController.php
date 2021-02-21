@@ -30,7 +30,18 @@ class LoginController extends Controller
             ]);
         }
 
-        return $user->createToken(md5(uniqid($user->email, true)))->plainTextToken;
+        $token = [];
+
+        if ($user->is_admin == 1) {
+            $token[] = "*";
+        }else{
+            $token[] = 'application';
+            $token[] = 'profile';
+            $token[] = 'collection:view';
+            $token[] = 'collection:data';
+        }
+
+        return $user->createToken(md5(uniqid($user->email, true)), $token)->plainTextToken;
     }
 
     public function user(Request $request)
@@ -38,15 +49,21 @@ class LoginController extends Controller
         $user = $request->user();
         $user->applications();
         $apps = $user->apps;
+
         if ($user->tokenCan('*')) {
             $user->can = ['admin' => true];
         } else {
             $user->can = $user->tokens[count($user->tokens) - 1]->abilities;
         }
 
+        
+
         if ($user->is_admin == 1) {
             $AllApps = Application::select('id', 'name', 'slug')->get();
+        }else{
+            $AllApps = $user->applications()->select('applications.name', 'applications.slug', 'applications.id')->get();
         }
+
         return response()->json([
             'email' => $user->email,
             'name' => $user->name,

@@ -26,14 +26,20 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum', 'IsAdmin'], f
 
 Route::group(['prefix' => 'apps', 'middleware' => 'auth:sanctum'], function($route){
 
+    //@TODO: see if this route will be used
     Route::group(['prefix' => 'control'], function($e){
         Route::get('/{slug}', 'ApplicationController@show');
     });
-    /** list only the avaible apps for the user, maybe will be the home page after login */
+
+    //get application collections
+    Route::group(['prefix' => '/{slug}/collections'], function($e){
+        Route::get('', 'ApplicationController@show');        
+    });
+
+    //show list of apps
     Route::get('', 'ApplicationController@index'); 
+    //show one app by slug
     Route::get('/{slug}', 'ApplicationController@show');
+    //create new app
     Route::post('new', 'ApplicationController@store');
 });
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
