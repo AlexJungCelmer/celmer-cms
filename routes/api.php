@@ -18,28 +18,34 @@ Route::post('/sanctum/token', 'LoginController@login');
 Route::post('/user/registration', 'LoginController@create');
 Route::get('/user', 'LoginController@user')->middleware('auth:sanctum');
 
-Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum', 'IsAdmin'], function($route){
+Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum', 'IsAdmin'], function ($route) {
     Route::get("", 'UsersController@index');
     Route::get("/{id}", 'UsersController@show');
-
 });
 
-Route::group(['prefix' => 'apps', 'middleware' => 'auth:sanctum'], function($route){
+Route::group(['prefix' => 'apps', 'middleware' => 'auth:sanctum'], function ($route) {
 
     //@TODO: see if this route will be used
-    Route::group(['prefix' => 'control'], function($e){
+    Route::group(['prefix' => 'control'], function ($e) {
         Route::get('/{slug}', 'ApplicationController@show');
     });
 
     //get application collections
-    Route::group(['prefix' => '/{slug}/collections'], function($e){
-        Route::get('', 'ApplicationController@show');        
+    Route::group(['prefix' => '/{slug}/collections'], function ($e) {
+        Route::get('', 'ApplicationController@listCollections');
+        Route::post('/create', 'CollectionController@create');
+        Route::get('/{collection}', 'CollectionController@show');
     });
 
     //show list of apps
-    Route::get('', 'ApplicationController@index'); 
+    Route::get('', 'ApplicationController@index');
     //show one app by slug
     Route::get('/{slug}', 'ApplicationController@show');
     //create new app
     Route::post('new', 'ApplicationController@store');
+});
+
+Route::group(['prefix' => 'collections', 'middleware' => 'auth:sanctum'], function ($route) {
+    //List the collection from application slug
+    Route::get('/{app}', 'ApplicationController@show');
 });

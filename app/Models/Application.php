@@ -19,6 +19,7 @@ class Application extends Model
         return $this->hasMany(Collection::class);
     }
 
+    
     /**
      * The attributes that are mass assignable.
      *

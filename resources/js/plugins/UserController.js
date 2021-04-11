@@ -15,10 +15,16 @@ const UserController = {
 
       methods: {
         isUserInScope: function (scope, scopes = store.state.user.user.can) {
-          if (scopes.includes(scope)) {
-            return true
+          console.log("scopes: ", scopes);
+          if (scopes.isArray) {
+            if (scopes.includes(scope)) {
+              return true
+            }
+            return false
+          } else {
+            if (scopes.admin == true)
+              return true
           }
-          return false
         },
       }
 

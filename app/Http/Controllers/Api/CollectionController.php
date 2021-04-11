@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Collection;
+use App\Models\Application;
 use Illuminate\Http\Request;
 
 class CollectionController extends Controller
@@ -22,9 +24,14 @@ class CollectionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         //
+        $collection = new Collection();
+        $collection = $request->all();
+        $collection['application_id'] = Application::where('slug', $request->slug)->firstOrFail()->id;
+        $collection->fields = json_encode($collection->fields);
+        return Collection::create($collection);
     }
 
     /**
@@ -41,12 +48,12 @@ class CollectionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Collection  $collection
      * @return \Illuminate\Http\Response
      */
-    public function show(Collection $collection)
+    public function show(Request $request)
     {
         //
+        return Collection::where('name', $request->collection)->firstOrFail();
     }
 
     /**

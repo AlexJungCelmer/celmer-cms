@@ -4,16 +4,21 @@ import store from './store/index'
  * Components imports
  */
 
-let login = () => import('./pages/LoginPage');
-let userNew = () => import('./pages/user/UserRegistration');
-let userProfile = () => import('./pages/user/Profile');
-let userList = () => import('./pages/user/List');
-let createOrEdit = () => import('./pages/apps/CreateOrEdit');
-let listApps = () => import('./pages/apps/list');
-let listAppsCollections = () => import('./pages/apps/Collections');
+//user
+const login = () => import('./pages/LoginPage');
+const userNew = () => import('./pages/user/UserRegistration');
+const userProfile = () => import('./pages/user/Profile');
+const userList = () => import('./pages/user/List');
+//apps
+const createOrEdit = () => import('./pages/apps/CreateOrEdit');
+const listApps = () => import('./pages/apps/list');
+const listAppsCollections = () => import('./pages/collections/Collections');
+//collections
+const createOrEditCollections = () => import('./pages/collections/Edit');
+
 
 /** Routes for SPA */
-let routes = [
+const routes = [
   {
     path: '/login',
     name: 'login',
@@ -65,6 +70,16 @@ let routes = [
         next();
       })
     }
+  },
+  {
+    path: '/application/:slug/collections/create',
+    name: 'app.collections.create',
+    component: createOrEditCollections,
+  },
+  {
+    path: '/application/:slug/collections/:collection',
+    name: 'app.collections.edit',
+    component: createOrEditCollections,
   },
 ];
 

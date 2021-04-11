@@ -25,7 +25,7 @@ class CollectionFactory extends Factory
         return [
             //sentence($nbWords = 6, $variableNbWords = true)
             'name' => $this->faker->word(),
-            'label' => $this->faker->word(),
+            'label' => $this->faker->sentence(2),
             'fields' => "text",
             'options' => '',
         ];

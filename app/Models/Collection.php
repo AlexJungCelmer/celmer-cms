@@ -13,4 +13,11 @@ class Collection extends Model
     {
         return $this->belongsToMany(Application::class);
     }
+
+    protected $fillable = [
+        'name',
+        'label',
+        'fields',
+        'options',
+    ];
 }

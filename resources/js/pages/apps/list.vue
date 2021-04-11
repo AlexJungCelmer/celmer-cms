@@ -60,12 +60,11 @@ export default {
   },
 
   created() {
-    console.log('created', this, this.user_scopes);
+    // console.log('created', this, this.user_scopes);
   },
 
   computed: {
     apps() {
-      console.log(this.$store.getters.applications.length);
       if (this.$store.getters.applications.length >= 1) {
         const search = this.search.toLowerCase().trim();
         if (!search) return this.$store.getters.applications;

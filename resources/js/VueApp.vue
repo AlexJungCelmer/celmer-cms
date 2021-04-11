@@ -79,13 +79,9 @@ export default {
       },
       (error) => {
         if (error.response.status === 401) {
-          this.$root.$bvToast.toast("You have no permission to access this", {
-            title: "Permission denied",
-            variant: "warning",
-            solid: true,
-          });
+          vm.$router.push({ name: "login" });
+          vm.$store.commit('logout');
         }
-        vm.$router.push({ name: "login" });
         return error;
       }
     );

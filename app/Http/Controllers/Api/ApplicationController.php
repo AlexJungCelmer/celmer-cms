@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use \App\Models\Application;
+use \App\Models\Collection;
 
 class ApplicationController extends Controller
 {
@@ -81,4 +82,16 @@ class ApplicationController extends Controller
     {
         //
     }
+    
+    /**
+     * Display all collections from the specified collection
+     * 
+     * @param Request $slug
+     * @return \Illuminate\Http\Response
+     */
+    public function listCollections(Request $request)
+    {
+        return Application::where('slug', $request->slug)->firstOrFail()->collections;
+    }
+
 }
