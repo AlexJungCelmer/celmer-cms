@@ -25,15 +25,11 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth:sanctum', 'IsAdmin'], f
 
 Route::group(['prefix' => 'apps', 'middleware' => 'auth:sanctum'], function ($route) {
 
-    //@TODO: see if this route will be used
-    Route::group(['prefix' => 'control'], function ($e) {
-        Route::get('/{slug}', 'ApplicationController@show');
-    });
-
     //get application collections
     Route::group(['prefix' => '/{slug}/collections'], function ($e) {
         Route::get('', 'ApplicationController@listCollections');
-        Route::post('/create', 'CollectionController@create');
+        Route::post('/store', 'CollectionController@store');
+        Route::post('/{collection}/update', 'CollectionController@update');
         Route::get('/{collection}', 'CollectionController@show');
     });
 

@@ -39,7 +39,7 @@ class ApplicationController extends Controller
     {
         $app = new Application();
         $app->name = $request->name;
-        $app->slug = str_slug($request->name, '-');
+        $app->slug = str_slug($request->name, '_');
         $app->save();
     }
 

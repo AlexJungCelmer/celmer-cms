@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Application;
+use App\Models\Collection;
 use App\Observers\ApplicationObserver;
+use App\Observers\CollectionObserver;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -32,6 +34,8 @@ class EventServiceProvider extends ServiceProvider
     {
         //
         parent::boot();
-        Application::observe(ApplicationObserver::class);
+        // Application::observe(ApplicationObserver::class);
+        Collection::observe(CollectionObserver::class);
+        
     }
 }

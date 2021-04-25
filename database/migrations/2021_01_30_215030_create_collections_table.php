@@ -18,7 +18,7 @@ class CreateCollectionsTable extends Migration
             $table->text('name');
             $table->text('label');
             $table->longText('fields');
-            $table->longText('options');
+            $table->longText('options')->nullable();
             $table->foreignId('application_id')->constrained('applications');
             $table->timestamps();
         });

@@ -26,8 +26,12 @@ class DatabaseSeeder extends Seeder
             'is_admin' => 0,
         ]);
 
-        $apps = \App\Models\Application::factory(4)->has(\App\Models\Collection::factory()->count(3))->create();
-        $apps_user = \App\Models\User::factory(2)->has(\App\Models\Application::factory()->count(3))->create();
-        $collections = \App\Models\Collection::get();
+        $apps = \App\Models\Application::factory(2)->hasUsers(2)->create();
+        $collections = \App\Models\Collection::factory(2)->forApplication()->create();
+        // $apps_user = \App\Models\User::factory(2)->hasApplications()->create();
+        // $apps = \App\Models\Application::get();
+        // foreach ($apps as $value) {
+        // }
+        // $collections = \App\Models\Collection::get();
     }
 }

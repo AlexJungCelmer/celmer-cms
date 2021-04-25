@@ -17,6 +17,9 @@ class ApplicationTable extends Migration
             $table->id();
             $table->string('name', 100);
             $table->string('slug');
+            $table->string('production_url');
+            $table->string('dev_url');
+            $table->string('is_production');
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });

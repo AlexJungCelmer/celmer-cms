@@ -28,7 +28,7 @@
               color="deep-purple lighten-2"
               text
               :to="{
-                name: 'app.collections.create-or-edit',
+                name: 'app.collections.edit',
                 params: {
                   slug: $route.params.slug,
                   collection: collection.name,
@@ -62,7 +62,7 @@
 
     <v-speed-dial :bottom="true" :right="true" absolute>
       <template v-slot:activator>
-        <router-link :to="{ name: 'app.collections.create' }">
+        <router-link :to="{ name: 'app.collections.edit', params:{ slug: $route.params.slug, collection: 'create' } }">
           <v-btn color="blue darken-2" dark fab>
             <v-icon> mdi-plus </v-icon>
           </v-btn>

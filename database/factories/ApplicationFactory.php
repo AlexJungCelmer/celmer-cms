@@ -25,7 +25,10 @@ class ApplicationFactory extends Factory
         $name = $this->faker->company;
         return [
             'name' => $name,
-            'slug' => str_slug($name, '-'),
+            'slug' => 'bb'.str_slug($name, '_'),
+            'production_url' => $this->faker->url,
+            'dev_url' => $this->faker->url,
+            'is_production' => rand(0, 1),
         ];
     }
 }

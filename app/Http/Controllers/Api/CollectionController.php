@@ -20,21 +20,6 @@ class CollectionController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        //
-        $collection = new Collection();
-        $collection = $request->all();
-        $collection['application_id'] = Application::where('slug', $request->slug)->firstOrFail()->id;
-        $collection->fields = json_encode($collection->fields);
-        return Collection::create($collection);
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -43,6 +28,19 @@ class CollectionController extends Controller
     public function store(Request $request)
     {
         //
+        $request->name = str_slug($request->name, '_');
+        $request->validate([
+            'label' => 'required|max:255',
+            'name' => 'required|unique:collections',
+            'fields' => 'required',
+        ]);
+        $collection = new Collection();
+        $collection->label = $request->label;
+        $collection->name = str_slug($request->name, '_');
+        $collection->options = $request->options;
+        $collection->application_id = Application::where('slug', '=', $request->slug)->first()->id;
+        $collection->fields = json_encode($request->fields);
+        return $collection->save();
     }
 
     /**
@@ -56,16 +54,6 @@ class CollectionController extends Controller
         return Collection::where('name', $request->collection)->firstOrFail();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Collection  $collection
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Collection $collection)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -74,9 +62,21 @@ class CollectionController extends Controller
      * @param  \App\Models\Collection  $collection
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Collection $collection)
+    public function update(Request $request)
     {
         //
+        $request->validate([
+            'id' => 'required',
+            'label' => 'required|max:255',
+            'fields' => 'required',
+        ]);
+        $collection = Collection::find($request->id);
+        $collection->label = $request->label;
+        $collection->options = $request->options;
+        $collection->fields = json_encode($request->fields);
+        
+        // return 'a';
+        return $collection->save();
     }
 
     /**

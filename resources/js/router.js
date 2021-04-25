@@ -24,6 +24,8 @@ const routes = [
     name: 'login',
     component: login,
   },
+
+  // user
   {
     path: '/user/new',
     name: 'user.new',
@@ -45,6 +47,7 @@ const routes = [
     component: userProfile,
   },
 
+  // app
   {
     path: '/applications',
     name: 'app.list',
@@ -60,6 +63,8 @@ const routes = [
     name: 'app.edit',
     component: createOrEdit,
   },
+
+  // collections
   {
     path: '/application/:slug/collections',
     name: 'app.collections',
@@ -71,11 +76,11 @@ const routes = [
       })
     }
   },
-  {
-    path: '/application/:slug/collections/create',
-    name: 'app.collections.create',
-    component: createOrEditCollections,
-  },
+  // {
+  //   path: '/application/:slug/collections/create',
+  //   name: 'app.collections.add',
+  //   component: createOrEditCollections,
+  // },
   {
     path: '/application/:slug/collections/:collection',
     name: 'app.collections.edit',

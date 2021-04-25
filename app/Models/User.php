@@ -45,6 +45,6 @@ class User extends Authenticatable
 
     public function applications()
     {
-        return $this->belongsToMany(Application::class);
+        return $this->hasMany(Application::class);
     }
 }

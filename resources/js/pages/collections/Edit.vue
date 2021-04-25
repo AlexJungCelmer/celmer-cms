@@ -8,6 +8,7 @@
         type="text"
         name="name"
         v-model="collection.name"
+        :disabled="collection.id"
       ></v-text-field>
       <v-text-field
         label="Collection Label(what you will read)"
@@ -24,7 +25,7 @@
           <transition-group>
             <fields-components
               v-for="(field, index) in collection.fields"
-              v-bind:key="index"
+              v-bind:key="'field' + index"
               v-on:toEdit="
                 field_to_edit = $event;
                 field_edit_dialog = true;
@@ -63,7 +64,7 @@
 
     <v-speed-dial bottom right absolute>
       <template v-slot:activator>
-        <v-btn color="blue darken-2" dark fab v-on:click="store();">
+        <v-btn color="blue darken-2" dark fab v-on:click="store()">
           <v-icon> mdi-send </v-icon>
         </v-btn>
       </template>
@@ -82,20 +83,7 @@ export default {
         name: "",
         label: "",
         options: "",
-        fields: [
-          {
-            name: "1",
-            label: "1",
-            type: "select",
-            order: "",
-          },
-          {
-            name: "2",
-            label: "2",
-            type: "text",
-            order: "",
-          },
-        ],
+        fields: [],
       },
       field_edit_dialog: false,
       field_quantity: 0,
@@ -116,24 +104,30 @@ export default {
     },
 
     store: function () {
-      axios.post('/api/apps/'+this.$route.params.slug+'/collections/create', this.collection).then(resp => {
+      let route = "/api/apps/" + this.$route.params.slug + "/collections/store";
+      if (this.$route.params.collection != "create") {
+        route = "/api/apps/"+this.$route.params.slug+"/collections/"+this.$route.params.collection+"/update";
+      }
+      axios.post(route, this.collection).then((resp) => {
         console.log(resp);
-      }); 
+      });
     },
   },
 
   created() {
     let vm = this;
-    // axios
-    //   .get(
-    //     "/api/apps/" +
-    //       vm.$route.params.slug +
-    //       "/collections/" +
-    //       vm.$route.params.collection
-    //   )
-    //   .then((resp) => {
-    //     console.log(resp.data);
-    //   });
+    axios
+      .get(
+        "/api/apps/" +
+          vm.$route.params.slug +
+          "/collections/" +
+          vm.$route.params.collection
+      )
+      .then((resp) => {
+        resp.data.fields = JSON.parse(resp.data.fields);
+        vm.collection = resp.data;
+        console.log("collection fields", resp.data);
+      });
   },
   components: {
     draggable,

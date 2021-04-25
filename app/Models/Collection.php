@@ -8,16 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Collection extends Model
 {
     use HasFactory;
-
-    public function apps()
+    
+    public function application()
     {
-        return $this->belongsToMany(Application::class);
+        return $this->belongsTo(Application::class);
     }
 
-    protected $fillable = [
-        'name',
-        'label',
-        'fields',
-        'options',
-    ];
+
 }
