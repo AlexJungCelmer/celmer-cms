@@ -7,6 +7,9 @@ use App\Models\Collection;
 use App\Models\Application;
 use Illuminate\Http\Request;
 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 class CollectionController extends Controller
 {
     /**
@@ -75,7 +78,36 @@ class CollectionController extends Controller
         $collection->options = $request->options;
         $collection->fields = json_encode($request->fields);
         
-        // return 'a';
+        /**
+         * will go to the observer.
+         */
+        $oldValueToNewValue = [];
+        $app = Application::find($collection->application_id);
+        if($collection->isDirty('fields')) {
+            $oldValueToNewValue = [];
+            $original = json_decode($collection->getOriginal('fields'));
+            $new = json_decode($collection->fields);
+            /**
+             * Makes a key value pair to from Old field name to new field name to change rename it
+             * if none has changes no problem, will keep the same.
+             */
+            $i = 0;
+            foreach($original as $key => $field){
+                // return $field;
+                $oldValueToNewValue[$i]["$field->name"] = $new[$key]->name;
+                $oldValueToNewValue[$i]["$field->type"
+                ] = $new[$key]->type;
+                $i++;
+            }
+            // dd($oldValueToNewValue);
+            // Schema::connection(config('db.connection'))->table($app->slug . '_' . $collection->name, function (Blueprint $table) use ($collection, $oldValueToNewValue) {
+            //     foreach ($oldValueToNewValue as $key => $field) {
+            //         $table->renameColumn("$key", $field['name']);
+            //     }
+            // });
+        }
+
+        return $oldValueToNewValue;
         return $collection->save();
     }
 
