@@ -74,12 +74,14 @@
                 v-if="showCollectionToRelate"
                 v-model="field_to_edit.options.isRelatedTo"
                 :items="collectionsToRelate"
-                menu-props="auto"
                 :item-text="'label'"
+                :item-value="'id'"
                 hide-details
                 label="Select collection to relate to"
                 single-line
               ></v-select>
+              
+              <codemirror v-if="!showCollectionToRelate" v-model="field_to_edit.options.defaultValues" :options="cmOptions"></codemirror>
             </v-card-text>
           </div>
         </div>
@@ -104,8 +106,14 @@
 <script>
 import draggable from "vuedraggable";
 import fieldsComponents from "./FieldsComponents";
+// require component
+import { codemirror } from "vue-codemirror";
+
+// require styles
+
+
 export default {
-  components: { fieldsComponents },
+  
   data() {
     return {
       collection: {
@@ -128,6 +136,14 @@ export default {
       typesThatCanBeRelated: ["Select", "Checkbox", "Checkbox", "Radio"],
       collectionsToRelate: [],
       showCollectionToRelate: false,
+      cmOptions: {
+        // codemirror options
+        tabSize: 4,
+        mode: "text/javascript",
+        theme: "material",
+        lineNumbers: true,
+        line: true,
+      },
     };
   },
 
@@ -143,7 +159,7 @@ export default {
           required: true,
           isRelation: false,
           isRelatedTo: "",
-          defaultValues: {},
+          defaultValues: "{\n\t\"value\": \"label\"\n}",
         },
       });
     },
@@ -202,24 +218,28 @@ export default {
 
   created() {
     let vm = this;
-    axios
-      .get(
-        "/api/apps/" +
-          vm.$route.params.slug +
-          "/collections/" +
-          vm.$route.params.collection
-      )
-      .then((resp) => {
-        resp.data.fields = JSON.parse(resp.data.fields);
-        vm.collection = resp.data;
-        console.log("collection fields", resp.data);
-      });
+    if (vm.$route.params.collection != "create") {
+      axios
+        .get(
+          "/api/apps/" +
+            vm.$route.params.slug +
+            "/collections/" +
+            vm.$route.params.collection
+        )
+        .then((resp) => {
+          resp.data.fields = JSON.parse(resp.data.fields);
+          vm.collection = resp.data;
+          console.log("collection fields", resp.data);
+        });
+    }
   },
+
   components: {
-    draggable,
+    draggable, fieldsComponents, codemirror
   },
 };
 </script>
 
-<style>
+<style scoped lang="scss">
+  @import "codemirror/lib/codemirror.css";
 </style>

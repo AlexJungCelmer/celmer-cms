@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
 class CollectionController extends Controller
 {
     /**
@@ -43,7 +44,36 @@ class CollectionController extends Controller
         $collection->options = $request->options;
         $collection->application_id = Application::where('slug', '=', $request->slug)->first()->id;
         $collection->fields = json_encode($request->fields);
-        return $collection->save();
+
+        /** 
+         * Will to the observer, is here just for testing  
+        */
+        $app = Application::find($collection->application_id);
+        $table_name = str_replace(' ', '_', $app->slug . '_' . $collection->name);
+        $fields = json_decode($collection->fields);
+        
+        
+
+        // return $fields;
+        Schema::connection(config('db.connection'))->create($table_name, function (Blueprint $table) use ($collection) {
+            $table->id();
+            foreach (json_decode($collection->fields) as $field) {
+                if ($field->type == "Text") {
+                } else if (in_array($field->type, ["Select", "Checkbox", "Checkbox", "Radio"])) {
+                    if ($field->options->isRelation == 1) {
+                        /** Get the collection to relate to from the ID */
+                        $collectionToRelate = Collection::find($field->options->isRelatedTo);
+                        $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
+                        $table->foreignId("$collectionToRelateTableName"."_id")->constrained($collectionToRelateTableName);
+                    }else{
+                        /** If is not related to some collection need to have json with value => label to use values preseted */
+                    }
+                }
+            }
+            $table->timestamps();
+        });
+
+        // return $collection->save();
     }
 
     /**
@@ -77,13 +107,13 @@ class CollectionController extends Controller
         $collection->label = $request->label;
         $collection->options = $request->options;
         $collection->fields = json_encode($request->fields);
-        
+
         /**
          * will go to the observer.
          */
         $oldValueToNewValue = [];
         $app = Application::find($collection->application_id);
-        if($collection->isDirty('fields')) {
+        if ($collection->isDirty('fields')) {
             $oldValueToNewValue = [];
             $original = json_decode($collection->getOriginal('fields'));
             $new = json_decode($collection->fields);
@@ -92,11 +122,10 @@ class CollectionController extends Controller
              * if none has changes no problem, will keep the same.
              */
             $i = 0;
-            foreach($original as $key => $field){
+            foreach ($original as $key => $field) {
                 // return $field;
                 $oldValueToNewValue[$i]["$field->name"] = $new[$key]->name;
-                $oldValueToNewValue[$i]["$field->type"
-                ] = $new[$key]->type;
+                $oldValueToNewValue[$i]["$field->type"] = $new[$key]->type;
                 $i++;
             }
             // dd($oldValueToNewValue);
