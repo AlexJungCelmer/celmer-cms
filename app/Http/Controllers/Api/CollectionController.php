@@ -6,10 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+
 
 class CollectionController extends Controller
 {
@@ -40,39 +39,18 @@ class CollectionController extends Controller
         ]);
         $collection = new Collection();
         $collection->label = $request->label;
-        $collection->name = str_slug($request->name, '_');
-        $collection->options = $request->options;
+        $collection->name = $request->name;
+        $collection->options = json_encode($request->options);
         $collection->application_id = Application::where('slug', '=', $request->slug)->first()->id;
         $collection->fields = json_encode($request->fields);
 
-        /** 
-         * Will to the observer, is here just for testing  
-        */
         $app = Application::find($collection->application_id);
-        $table_name = str_replace(' ', '_', $app->slug . '_' . $collection->name);
-        $fields = json_decode($collection->fields);
-        
-        
+        $modelName = str_replace('-', ' ', "$app->slug $collection->name");
+        $modelName = str_replace(' ', '', ucwords($modelName));
 
-        // return $fields;
-        Schema::connection(config('db.connection'))->create($table_name, function (Blueprint $table) use ($collection) {
-            $table->id();
-            foreach (json_decode($collection->fields) as $field) {
-                if ($field->type == "Text") {
-                } else if (in_array($field->type, ["Select", "Checkbox", "Checkbox", "Radio"])) {
-                    if ($field->options->isRelation == 1) {
-                        /** Get the collection to relate to from the ID */
-                        $collectionToRelate = Collection::find($field->options->isRelatedTo);
-                        $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
-                        $table->foreignId("$collectionToRelateTableName"."_id")->constrained($collectionToRelateTableName);
-                    }else{
-                        /** If is not related to some collection need to have json with value => label to use values preseted */
-                    }
-                }
-            }
-            $table->timestamps();
-        });
+        Artisan::call("make:model", ["name" => $modelName , "--force -n -q"]);
 
+        // return $collection;
         // return $collection->save();
     }
 

@@ -108,7 +108,7 @@ import draggable from "vuedraggable";
 import fieldsComponents from "./FieldsComponents";
 // require component
 import { codemirror } from "vue-codemirror";
-
+import "codemirror/lib/codemirror.css";
 // require styles
 
 
@@ -137,10 +137,9 @@ export default {
       collectionsToRelate: [],
       showCollectionToRelate: false,
       cmOptions: {
-        // codemirror options
         tabSize: 4,
-        mode: "text/javascript",
-        theme: "material",
+        mode: 'application/json',
+        theme: 'base16-dark',
         lineNumbers: true,
         line: true,
       },
@@ -159,7 +158,7 @@ export default {
           required: true,
           isRelation: false,
           isRelatedTo: "",
-          defaultValues: "{\n\t\"value\": \"label\"\n}",
+          defaultValues: "",
         },
       });
     },
@@ -241,5 +240,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  @import "codemirror/lib/codemirror.css";
+  
 </style>
