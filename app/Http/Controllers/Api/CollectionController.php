@@ -6,6 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use App\Models\Application;
 use Illuminate\Http\Request;
+
+/**
+ * Will go to the observer
+ */
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
 
 
@@ -31,10 +39,12 @@ class CollectionController extends Controller
     public function store(Request $request)
     {
         //
+
+
         $request->name = str_slug($request->name, '_');
         $request->validate([
             'label' => 'required|max:255',
-            'name' => 'required|unique:collections',
+            // 'name' => 'required|unique:collections',
             'fields' => 'required',
         ]);
         $collection = new Collection();
@@ -44,13 +54,72 @@ class CollectionController extends Controller
         $collection->application_id = Application::where('slug', '=', $request->slug)->first()->id;
         $collection->fields = json_encode($request->fields);
 
+        /**
+         * Need to go to the Observer
+         */
+
+        // get the app related to this collection creating
         $app = Application::find($collection->application_id);
-        $modelName = str_replace('-', ' ', "$app->slug $collection->name");
-        $modelName = str_replace(' ', '', ucwords($modelName));
+        // makes the table name for the collection appended to the app slug
+        $table_name = str_replace(' ', '_', $app->slug . '_' . $collection->name);
+        /**
+         * @todo create a module ModelCreator to control the creating by class methods
+         * 
+         * Creates the model
+         */
+        $modelName = str_replace(['-', '_'], ' ', "$app->slug $collection->name");
+        $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
+        Artisan::call("make:model", ['name' => "/ApplicationsModels/$app->slug/$modelName", "--force -n -q"]);
+        // return $fields;
+        Schema::connection(config('db.connection'))->create($table_name, function (Blueprint $table) use ($collection, $app, $modelName) {
+            $table->id();
+            foreach (json_decode($collection->fields) as $field) {
+                // create the normal text file input
+                if ($field->type == "Text") {
+                    $table->text($field->name)->nullable(!$field->options->required);
+                } else if (in_array($field->type, ["Select", "Checkbox", "Checkbox", "Radio"])) {
+                    // if the field is related to another collection
+                    if ($field->options->isRelation == 1) {
+                        // Get the collection to relate to from the ID, this come from the front-end
+                        $collectionToRelate = Collection::find($field->options->isRelatedTo);
+                        // get the table to relate to
+                        $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
+                        // creates the foreign key
+                        $table->foreignId("$collectionToRelateTableName" . "_id")->constrained($collectionToRelateTableName);
 
-        Artisan::call("make:model", ["name" => $modelName , "--force -n -q"]);
+                        /**
+                         * Write the relation in the model
+                         */
+                        $pathToModel = app_path() . "/Models/ApplicationsModels/$app->slug/$modelName.php";
+                        $linesOfTheModel = file(app_path() . "/Models/$app->slug/$modelName.php");
+                        $search      = "    //end custom relations from cms";
+                        $relationsMethodsString = '';
+                        $relationsMethodsString .= "public function $field->name(){ \n";
+                        $relationsMethodsString .= 'return $this->hasMany(' . $modelName . '::class, ' . '"id"' . ', "' . $collectionToRelateTableName . '_id"' . ');';
+                        $relationsMethodsString .= "\n } \n";
 
-        // return $collection;
+                        foreach ($linesOfTheModel as $key => $value) {
+                            if (str_contains($value, $search)) {
+                                $linesOfTheModel[($key - 1)] = "\n $relationsMethodsString \n";
+                            }
+                        }
+                        file_put_contents($pathToModel, implode('', $linesOfTheModel));
+                    } else {
+                        /** 
+                         * @todo
+                         * If is not related to some collection need to have json with value => label to use values preseted 
+                         */
+                    }
+                }
+            }
+            $table->timestamps();
+        });
+
+        /**
+         * End observer testing
+         */
+
+        return $collection;
         // return $collection->save();
     }
 

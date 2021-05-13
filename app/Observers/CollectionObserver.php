@@ -46,9 +46,9 @@ class CollectionObserver
             }
             $table->timestamps();
         });
-        $modelName = str_replace('-', ' ', "$app->slug $collection->name");
+        $modelName = str_replace(['-', '_'], ' ', "$app->slug $collection->name");
         $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
-        Artisan::call("make:model", ["$modelName  --force -n -q"]);
+        Artisan::call("make:model", ['name' => "/$app->slug/$modelName", "--force -n -q"]);
 
         // /**
         //  * Find the app related to the collection.
