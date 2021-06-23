@@ -20,35 +20,35 @@ class CollectionObserver
     public function created(Collection $collection)
     {
 
-        /**
-         * Find the app related to the collection.
-         */
-        $app = Application::find($collection->application_id);
-        $table_name = str_replace(' ', '_', $app->slug . '_' . $collection->name);
-        $fields = json_decode($collection->fields);
+        // /**
+        //  * Find the app related to the collection.
+        //  */
+        // $app = Application::find($collection->application_id);
+        // $table_name = str_replace(' ', '_', $app->slug . '_' . $collection->name);
+        // $fields = json_decode($collection->fields);
 
-        // return $fields;
-        Schema::connection(config('db.connection'))->create($table_name, function (Blueprint $table) use ($collection) {
-            $table->id();
-            foreach (json_decode($collection->fields) as $field) {
-                if ($field->type == "Text") {
-                    $table->text($field->name)->nullable(!$field->options->required);
-                } else if (in_array($field->type, ["Select", "Checkbox", "Checkbox", "Radio"])) {
-                    if ($field->options->isRelation == 1) {
-                        /** Get the collection to relate to from the ID */
-                        $collectionToRelate = Collection::find($field->options->isRelatedTo);
-                        $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
-                        $table->foreignId("$collectionToRelateTableName"."_id")->constrained($collectionToRelateTableName);
-                    }else{
-                        /** If is not related to some collection need to have json with value => label to use values preseted */
-                    }
-                }
-            }
-            $table->timestamps();
-        });
-        $modelName = str_replace(['-', '_'], ' ', "$app->slug $collection->name");
-        $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
-        Artisan::call("make:model", ['name' => "/$app->slug/$modelName", "--force -n -q"]);
+        // // return $fields;
+        // Schema::connection(config('db.connection'))->create($table_name, function (Blueprint $table) use ($collection) {
+        //     $table->id();
+        //     foreach (json_decode($collection->fields) as $field) {
+        //         if ($field->type == "Text") {
+        //             $table->text($field->name)->nullable(!$field->options->required);
+        //         } else if (in_array($field->type, ["Select", "Checkbox", "Checkbox", "Radio"])) {
+        //             if ($field->options->isRelation == 1) {
+        //                 /** Get the collection to relate to from the ID */
+        //                 $collectionToRelate = Collection::find($field->options->isRelatedTo);
+        //                 $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
+        //                 $table->foreignId("$collectionToRelateTableName"."_id")->constrained($collectionToRelateTableName);
+        //             }else{
+        //                 /** If is not related to some collection need to have json with value => label to use values preseted */
+        //             }
+        //         }
+        //     }
+        //     $table->timestamps();
+        // });
+        // $modelName = str_replace(['-', '_'], ' ', "$app->slug $collection->name");
+        // $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
+        // Artisan::call("make:model", ['name' => "/$app->slug/$modelName", "--force -n -q"]);
 
         // /**
         //  * Find the app related to the collection.

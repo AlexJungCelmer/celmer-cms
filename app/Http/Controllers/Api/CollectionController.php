@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Models\Collection;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use App\Modules\RelationModule;
 
 /**
  * Will go to the observer
@@ -70,40 +72,42 @@ class CollectionController extends Controller
         $modelName = str_replace(['-', '_'], ' ', "$app->slug $collection->name");
         $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
         Artisan::call("make:model", ['name' => "/ApplicationsModels/$app->slug/$modelName", "--force -n -q"]);
-        // return $fields;
+
         Schema::connection(config('db.connection'))->create($table_name, function (Blueprint $table) use ($collection, $app, $modelName) {
             $table->id();
             foreach (json_decode($collection->fields) as $field) {
                 // create the normal text file input
                 if ($field->type == "Text") {
-                    $table->text($field->name)->nullable(!$field->options->required);
+                    try {
+                        $table->text($field->name)->nullable(!$field->options->required);
+                    } catch (\Throwable $th) {
+                        return response(['message' => 'Failed to create text field', 'exception' => $th], 500);
+                    }
                 } else if (in_array($field->type, ["Select", "Checkbox", "Checkbox", "Radio"])) {
                     // if the field is related to another collection
                     if ($field->options->isRelation == 1) {
-                        // Get the collection to relate to from the ID, this come from the front-end
-                        $collectionToRelate = Collection::find($field->options->isRelatedTo);
-                        // get the table to relate to
-                        $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
-                        // creates the foreign key
-                        $table->foreignId("$collectionToRelateTableName" . "_id")->constrained($collectionToRelateTableName);
-
-                        /**
-                         * Write the relation in the model
-                         */
-                        $pathToModel = app_path() . "/Models/ApplicationsModels/$app->slug/$modelName.php";
-                        $linesOfTheModel = file(app_path() . "/Models/$app->slug/$modelName.php");
-                        $search      = "    //end custom relations from cms";
-                        $relationsMethodsString = '';
-                        $relationsMethodsString .= "public function $field->name(){ \n";
-                        $relationsMethodsString .= 'return $this->hasMany(' . $modelName . '::class, ' . '"id"' . ', "' . $collectionToRelateTableName . '_id"' . ');';
-                        $relationsMethodsString .= "\n } \n";
-
-                        foreach ($linesOfTheModel as $key => $value) {
-                            if (str_contains($value, $search)) {
-                                $linesOfTheModel[($key - 1)] = "\n $relationsMethodsString \n";
-                            }
+                        try {
+                            // Get the collection to relate to from the ID, this come from the front-end
+                            $collectionToRelate = Collection::find($field->options->isRelatedTo);
+                            // get the table to relate to
+                            $collectionToRelateTableName = str_replace(' ', '_', $collectionToRelate->application->slug . '_' . $collectionToRelate->name);
+                            // Get the collection to relate to from the ID, this come from the front-end
+                            $collectionToRelate = Collection::find($field->options->isRelatedTo);
+                            // creates the foreign key
+                            $table->foreignId("$collectionToRelateTableName" . "_id")->constrained($collectionToRelateTableName);
+                        } catch (\Throwable $th) {
+                            return response(['message' => 'Failed to create foreignId field', 'exception' => $th], 500);
                         }
-                        file_put_contents($pathToModel, implode('', $linesOfTheModel));
+
+                        $relationModule = new RelationModule();
+                        try {
+                            $relation = $relationModule->createRelation($app->slug, $modelName, $field->name, $collectionToRelateTableName);
+                            if ($relation['status'] == 500) {
+                                return response(['message' => $relation['message'], 'exception' => ''], $relation['status']);
+                            }
+                        } catch (\Throwable $th) {
+                            return response(['message' => 'Failed to create relation', 'exception' => $th], 500);
+                        }
                     } else {
                         /** 
                          * @todo
@@ -120,7 +124,7 @@ class CollectionController extends Controller
          */
 
         return $collection;
-        // return $collection->save();
+        return $collection->save();
     }
 
     /**
