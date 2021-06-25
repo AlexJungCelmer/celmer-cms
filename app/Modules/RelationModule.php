@@ -43,6 +43,29 @@ class RelationModule
     }
 
     /**
+     * Updates some relation, changing the name of it and the table
+     */
+    public function updateRelation($appSlug, $modelName, $fieldName, $collectionToRelateTableName, $newFieldName, $newCollectionToRelateTableName)
+    {
+        // Check if the relation exists e the new one does not exist
+        $pathToModel = app_path() . "/Models/ApplicationsModels/$appSlug/$modelName.php";
+        $linesOfTheModel = file(app_path() . "/Models/ApplicationsModels/$appSlug/$modelName.php");
+        $search = "$fieldName";
+        $relationsMethodsString = '';
+        if ($this->containsRelation($appSlug, $modelName, $fieldName) && !$this->containsRelation($appSlug, $modelName, $newFieldName)) {
+            foreach ($linesOfTheModel as $key => $value) {
+                if (str_contains($value, $search)) {
+                    dd($value);
+                    $linesOfTheModel[($key - 1)] = "\n$relationsMethodsString\n";
+                }
+            }
+            file_put_contents($pathToModel, implode('', $linesOfTheModel));
+            return ['status' => 200, 'message' => "Nova relação criada $newFieldName e $modelName"];
+        } else {
+            return ['status' => 500, 'message' => 'Relação existente não encontrada ou nova relação já existe'];
+        }
+    }
+    /**
      * Verify if given model contains a given relation already, serves to not repeat methods...
      * @param appSlug Slug of the Application
      * @param modelName String Name of the model
