@@ -15,6 +15,8 @@ const listApps = () => import('./pages/apps/list');
 const listAppsCollections = () => import('./pages/collections/Collections');
 //collections
 const createOrEditCollections = () => import('./pages/collections/Edit');
+//entries
+const listEntries = () => import('./pages/entries/List');
 
 
 /** Routes for SPA */
@@ -76,15 +78,18 @@ const routes = [
       })
     }
   },
-  // {
-  //   path: '/application/:slug/collections/create',
-  //   name: 'app.collections.add',
-  //   component: createOrEditCollections,
-  // },
+
   {
     path: '/application/:slug/collections/:collection',
     name: 'app.collections.edit',
     component: createOrEditCollections,
+  },
+
+  //entries
+  {
+    path: '/application/:slug/collections/:collection/entries',
+    name: 'app.collections.entries',
+    component: listEntries,
   },
 ];
 

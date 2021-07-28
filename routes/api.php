@@ -31,6 +31,9 @@ Route::group(['prefix' => 'apps', 'middleware' => 'auth:sanctum'], function ($ro
         Route::post('/store', 'CollectionController@store');
         Route::post('/{collection}/update', 'CollectionController@update');
         Route::get('/{collection}', 'CollectionController@show');
+
+        //entries control
+        Route::get('/{collection}/entries', 'CollectionController@entries');
     });
 
     //show list of apps

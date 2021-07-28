@@ -80,7 +80,18 @@
                 label="Select collection to relate to"
                 single-line
               ></v-select>
-              
+
+              <v-select
+                v-if="showCollectionToRelate && field_to_edit.options.isRelatedTo"
+                v-model="field_to_edit.options.isRelatedToFieldLabel"
+                :items="JSON.parse(collectionsToRelate.filter(item => {return item.id == field_to_edit.options.isRelatedTo})[0].fields)"
+                :item-text="'label'"
+                :item-value="'name'"
+                hide-details
+                label="Select field to show"
+                single-line
+              ></v-select>
+
               <codemirror v-if="!showCollectionToRelate" v-model="field_to_edit.options.defaultValues" :options="cmOptions"></codemirror>
             </v-card-text>
           </div>
@@ -158,6 +169,7 @@ export default {
           required: true,
           isRelation: false,
           isRelatedTo: "",
+          isRelatedToFieldLabel: "",
           defaultValues: "",
         },
       });

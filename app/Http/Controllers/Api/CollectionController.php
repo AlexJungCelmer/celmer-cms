@@ -135,4 +135,18 @@ class CollectionController extends Controller
     {
         //
     }
+
+    public function entries(Request $request)
+    {
+        //make the name to find the specified model inside the application models folder
+        $modelName = str_replace(['-', '_'], ' ', "$request->slug" . "$request->collection");
+        $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
+
+        $class = '\\App\\Models\\ApplicationsModels\\' . $request->slug . '\\' . $modelName;
+        if (class_exists($class)) {
+            return $class::get();
+        } else {
+            return 'a';
+        }
+    }
 }

@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import CustomVue from "./services/vueService";
+
 export default {
   data: () => ({
     cards: ["Today", "Yesterday"],
@@ -95,6 +97,12 @@ export default {
       this.$store.dispatch("user").then((resp) => {});
       this.$store.dispatch("getApplications").then((resp) => {});
     }
+  },
+
+  mounted() {
+    CustomVue.$on("500", (resp) => {
+      console.log(resp);alert('a');
+    });
   },
 };
 </script>

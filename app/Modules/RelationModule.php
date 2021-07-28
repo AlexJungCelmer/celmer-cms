@@ -55,7 +55,6 @@ class RelationModule
         if ($this->containsRelation($appSlug, $modelName, $fieldName) && !$this->containsRelation($appSlug, $modelName, $newFieldName)) {
             foreach ($linesOfTheModel as $key => $value) {
                 if (str_contains($value, $search)) {
-                    dd($value);
                     $linesOfTheModel[($key - 1)] = "\n$relationsMethodsString\n";
                 }
             }
