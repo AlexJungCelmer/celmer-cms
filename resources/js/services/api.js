@@ -25,8 +25,12 @@ export default class Api {
 		return api;
 	}
 
-	async getEntries(app, collection){
-		return this.axiosService('apps/'+app+'/collections/'+collection+'/entries')
+	async getEntries(app, collection) {
+		return await this.axiosService('apps/' + app + '/collections/' + collection + '/entries')
+	}
+
+	async getEntrie(app, collection, id) {
+		return await this.axiosService('apps/' + app + '/collections/' + collection + '/entries/' + id)
 	}
 
 }

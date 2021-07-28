@@ -1,11 +1,29 @@
 <template>
   <div>
-    <!-- <v-data-table
+    <v-data-table
+      :loading="!entries.length"
+      loading-text="Carregando dados"
       :headers="headers"
-      :items="desserts"
-      :items-per-page="5"
+      :items="entries"
       class="elevation-1"
-    ></v-data-table> -->
+      v-model="selected"
+      show-select
+    >
+      <template v-slot:item.actions="{ item }">
+        <router-link
+          :to="{
+            name: 'app.collections.entries.edit',
+            params: {
+              slug: $route.params.slug,
+              collection: $route.params.collection,
+              id: item.id,
+            },
+          }"
+          ><v-icon class="mr-2"> mdi-pencil </v-icon></router-link
+        >
+        <v-icon @click="deleteItem(item)"> mdi-delete </v-icon>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
@@ -16,12 +34,39 @@ export default {
   data() {
     return {
       entries: [],
+      headers: [],
+      selected: [],
     };
   },
 
   created() {
     let api = Api.new();
-		api.getEntries(this.$route.params.slug, this.$route.params.collection)
+    let vm = this;
+
+    api
+      .getEntries(this.$route.params.slug, this.$route.params.collection)
+      .then((resp) => {
+        for (let entrie of resp.data) {
+          for (let key in entrie) {
+            vm.headers.push({
+              value: key,
+              text: key,
+            });
+          }
+        }
+        vm.headers.push({ text: "Actions", value: "actions", sortable: false }),
+          (vm.entries = resp.data);
+      });
+  },
+
+  methods: {
+    editItem(item) {
+      alert("a");
+    },
+
+    deleteItem(item) {
+      alert("a");
+    },
   },
 };
 </script>

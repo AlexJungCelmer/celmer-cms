@@ -17,6 +17,7 @@ const listAppsCollections = () => import('./pages/collections/Collections');
 const createOrEditCollections = () => import('./pages/collections/Edit');
 //entries
 const listEntries = () => import('./pages/entries/List');
+const editEntrie = () => import('./pages/entries/Edit');
 
 
 /** Routes for SPA */
@@ -90,6 +91,11 @@ const routes = [
     path: '/application/:slug/collections/:collection/entries',
     name: 'app.collections.entries',
     component: listEntries,
+  },
+  {
+    path: '/application/:slug/collections/:collection/entries/:id',
+    name: 'app.collections.entries.edit',
+    component: editEntrie,
   },
 ];
 

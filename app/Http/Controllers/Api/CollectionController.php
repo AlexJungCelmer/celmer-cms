@@ -136,6 +136,7 @@ class CollectionController extends Controller
         //
     }
 
+    // @TODO: the entries function will go to another controller !important
     public function entries(Request $request)
     {
         //make the name to find the specified model inside the application models folder
@@ -146,7 +147,21 @@ class CollectionController extends Controller
         if (class_exists($class)) {
             return $class::get();
         } else {
-            return 'a';
+            return response(json_encode(['message' => 'Model não encontrada.']), 404);
+        }
+    }
+
+    public function getEntrie(Request $request)
+    {
+        //make the name to find the specified model inside the application models folder
+        $modelName = str_replace(['-', '_'], ' ', "$request->slug" . "$request->collection");
+        $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
+
+        $class = '\\App\\Models\\ApplicationsModels\\' . $request->slug . '\\' . $modelName;
+        if (class_exists($class)) {
+            return $class::find($request->id);
+        } else {
+            return response(json_encode(['message' => 'Entrada não encontrada.']), 404);
         }
     }
 }

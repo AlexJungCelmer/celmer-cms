@@ -7,7 +7,14 @@ php:
       - index.php
       - server.php
 js:
+  preset: vue
+  name: "*.vue"
   finder:
+    exclude:
+      - "modules"
+      - "node_modules"
+      - "storage"
+      - "vendor"
     not-name:
       - webpack.mix.js
 css: true
