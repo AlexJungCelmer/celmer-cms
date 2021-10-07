@@ -140,12 +140,39 @@ class CollectionController extends Controller
     public function entries(Request $request)
     {
         //make the name to find the specified model inside the application models folder
+        $app_collections = Application::where('slug', $request->slug)->firstOrFail()->collections->toArray();
+        $collection = '';
+        foreach ($app_collections as $value){
+            if($value['name'] == $request->collection){
+                $collection = $value;
+                break;
+            }
+        }
+        $relationsId = [];
+        $fields = json_decode($collection['fields']);
+        // return $fields[0]->name == 'new';
+        foreach ($fields as $field){
+            $field_options = json_decode(json_encode($field->options), true);
+            if($field_options['isRelation']){
+                $relationsId[] = $field_options['isRelatedTo'];
+            }
+        }
+
+        $relatedCollections = Collection::select('name')->whereIn('id', $relationsId)->get();
+        $relatedCollectionsName = [];
+        foreach ($relatedCollections as $relatedCollection){
+            $relatedCollectionsName[] = $relatedCollection->name;
+        }
+
+        // return $relatedCollectionsName;
+        
+
         $modelName = str_replace(['-', '_'], ' ', "$request->slug" . "$request->collection");
         $modelName = str_replace(' ', '', lcfirst(ucwords($modelName)));
-
+        // return $request->collection;
         $class = '\\App\\Models\\ApplicationsModels\\' . $request->slug . '\\' . $modelName;
         if (class_exists($class)) {
-            return $class::get();
+            return $class::with($relatedCollectionsName)->get();
         } else {
             return response(json_encode(['message' => 'Model não encontrada.']), 404);
         }

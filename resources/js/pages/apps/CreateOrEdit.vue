@@ -66,7 +66,7 @@
                 color="deep-purple lighten-2"
                 text
                 :to="{
-                  name: 'collection.entries',
+                  name: 'app.collections.entries',
                   params: {
                     slug: $route.params.slug,
                     collection: collection.name,
