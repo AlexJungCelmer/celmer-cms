@@ -1,5 +1,5 @@
 const mix = require('laravel-mix');
-require('laravel-mix-brotli');
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -10,13 +10,8 @@ require('laravel-mix-brotli');
  | file for the application as well as bundling up all the JS files.
  |
  */
-// mix.config.webpackConfig.output = {
-//     chunkFilename: 'js/[name].bundle.js',
-//     publicPath: '/',
-// };
 
-mix.js('resources/js/app.js', 'public/js').vue()
+mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
-    ]).brotli();
-mix.disableSuccessNotifications();
+    ]);

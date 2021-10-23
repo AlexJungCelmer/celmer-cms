@@ -1,5 +1,5 @@
 window._ = require('lodash');
-import store from './store/index';
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -7,21 +7,7 @@ import store from './store/index';
  */
 
 window.axios = require('axios');
-// axios.defaults.headers.common['Authorization'] = 'Bearer 1|pSy5skBdWlPpYj931mV9ATQE8fUll6ZYQQR6NPV9';
 
-function getCookie(name) {
-    let matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-  }
-
-if ( getCookie('_token') ) {
-    store.commit("setToken", getCookie('_token'));
-    axios.defaults.headers.common['Authorization'] = getCookie('_token');
-} else {
-    axios.defaults.headers.common['Authorization'] = '';
-}
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
