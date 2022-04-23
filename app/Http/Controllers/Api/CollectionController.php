@@ -89,9 +89,30 @@ class CollectionController extends Controller
             'fields' => 'required',
         ]);
         $collection = Collection::find($request->id);
+        // return [
+        //     json_decode($collection->fields),
+        //     $request->fields
+        // ];
         $collection->label = $request->label;
         $collection->options = $request->options;
         $collection->fields = json_encode($request->fields);
+
+        $newCollumnsName = [];
+
+        foreach ($request->fields as $newField) {
+            $contains = false;
+            foreach (json_decode($collection->fields) as $oldField) {
+                if($newField['name'] == $oldField->name){
+                    $contains = true;
+                }
+            }
+
+            if(!$contains){
+                $newCollumnsName[] = $newField;
+            }
+            $contains = false;
+        }
+        return $newCollumnsName;
 
         /**
          * will go to the observer.
@@ -103,11 +124,12 @@ class CollectionController extends Controller
             $original = json_decode($collection->getOriginal('fields'));
             $new = json_decode($collection->fields);
             /**
-             * Makes a key value pair to from Old field name to new field name to change rename it
-             * if none has changes no problem, will keep the same.
+             * Makes a key value pair to from Old field name to new field 
+             * name to change rename it if none has changes no problem, 
+             * will keep the same.
              */
             $i = 0;
-            foreach ($original as $key => $field) {
+            foreach (json_decode($request->fields) as $key => $field) {
                 // return $field;
                 $oldValueToNewValue[$i]["$field->name"] = $new[$key]->name;
                 $oldValueToNewValue[$i]["$field->type"] = $new[$key]->type;

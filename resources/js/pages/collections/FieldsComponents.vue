@@ -28,6 +28,9 @@
 </template>
 
 <script>
+/**
+ * @TODO need to return if is to delete the field and if have edit as well
+ */
 export default {
   // data() {
   //   return {

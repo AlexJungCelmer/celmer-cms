@@ -9,6 +9,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Artisan;
 use App\Modules\RelationModule;
+use Str;
 
 class CollectionObserver
 {
@@ -28,7 +29,7 @@ class CollectionObserver
         // get the app related to this collection creating
         $app = Application::find($collection->application_id);
         // makes the table name for the collection appended to the app slug
-        $table_name = str_replace(' ', '_', $app->slug . '_' . $collection->name);
+        $table_name = $table_name = str_replace(' ', '_', $app->slug . '_').Str::snake(Str::plural(class_basename($collection->name)));
         /**
          * @todo create a module ModelCreator to control the creating by class methods
          * 

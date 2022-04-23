@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-data-table
-      :loading="!entries.length"
+      :loading="loading"
       loading-text="Carregando dados"
       :headers="headers"
       :items="entries"
@@ -33,6 +33,7 @@ import Api from "../../services/api";
 export default {
   data() {
     return {
+      loading: true,
       entries: [],
       headers: [],
       selected: [],
@@ -56,6 +57,9 @@ export default {
         }
         vm.headers.push({ text: "Actions", value: "actions", sortable: false }),
           (vm.entries = resp.data);
+      }).catch(err => {
+      }).finally(e => {
+        vm.loading = false
       });
   },
 
