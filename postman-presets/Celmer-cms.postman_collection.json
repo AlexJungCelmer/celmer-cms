@@ -1,0 +1,209 @@
+{
+	"info": {
+		"_postman_id": "5559f26d-041b-4322-aece-db3774299d89",
+		"name": "Celmer-cms",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20760223"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get-user-info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/user",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "apps",
+			"item": [
+				{
+					"name": "collections",
+					"item": [
+						{
+							"name": "store",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{api_url}}/apps/{{app_slug}}",
+									"host": [
+										"{{api_url}}"
+									],
+									"path": [
+										"apps",
+										"{{app_slug}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "get-apps",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/apps",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"apps"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-app-slug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_url}}/apps/{{app_slug}}",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"apps",
+								"{{app_slug}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-app",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Postman Test",
+									"type": "text"
+								},
+								{
+									"key": "slug",
+									"value": "postman-test",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api_url}}/apps/new",
+							"host": [
+								"{{api_url}}"
+							],
+							"path": [
+								"apps",
+								"new"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "get-admin-token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "email",
+							"value": "alex.celmer@hotmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api_url}}/sanctum/token",
+					"host": [
+						"{{api_url}}"
+					],
+					"path": [
+						"sanctum",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{admin_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "admin_token",
+			"value": "1|A2IIJdIbAVsFDF8Cwqsy6gkEwBcLPp8r3ZEh7mDa",
+			"type": "string"
+		},
+		{
+			"key": "api_url",
+			"value": "http://127.0.0.1:8000/api",
+			"type": "string"
+		},
+		{
+			"key": "app_slug",
+			"value": "bbchamplin_and_sons"
+		}
+	]
+}

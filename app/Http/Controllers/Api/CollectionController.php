@@ -42,7 +42,6 @@ class CollectionController extends Controller
     {
         //
 
-
         $request->name = str_slug($request->name, '_');
         $request->validate([
             'label' => 'required|max:255',

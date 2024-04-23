@@ -2,16 +2,18 @@
 
 namespace App\Modules;
 
+use Illuminate\Support\Facades\Log;
+
 class RelationModule
 {
     /**
      * Create relation between two models in file model file
-     * @param appSlug Slug of the Application
-     * @param modelName String Name of the model
-     * @param fieldName String of the field name
-     * @param collectionToRelateTableName the table to relate to
+     * @param string appSlug Slug of the Application
+     * @param string modelName String Name of the model
+     * @param string fieldName String of the field name
+     * @param string collectionToRelateTableName the table to relate to
      */
-    public function createRelation($appSlug, $modelName, $fieldName, $collectionToRelateTableName)
+    public function createRelation(string $appSlug, string $modelName, string $fieldName, string $collectionToRelateTableName)
     {
         try {
             // if the relations doesn't exist will create one

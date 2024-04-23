@@ -7,6 +7,7 @@ use App\Observers\UserObserver;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationObserver
 {
@@ -18,7 +19,8 @@ class ApplicationObserver
      */
     public function created(Application $application)
     {
-        //
+        Log::info("Application created $application->name ... $application->slug");
+        // Dont thing i will need this anymore, here just in case.
         // Schema::connection(config('db.connection'))->create($application->slug."_collections", function (Blueprint $table) use ($application){
         //     $table->id();
         //     $table->text('name');
@@ -38,6 +40,7 @@ class ApplicationObserver
      */
     public function updated(Application $application)
     {
+        Log::info("Application updated $application->name ... $application->slug");
         //
     }
 
@@ -49,6 +52,7 @@ class ApplicationObserver
      */
     public function deleted(Application $application)
     {
+        Log::info("Application deleted $application->name ... $application->slug");
         //
     }
 
@@ -60,6 +64,7 @@ class ApplicationObserver
      */
     public function restored(Application $application)
     {
+        Log::info("Application restored $application->name ... $application->slug");
         //
     }
 
@@ -71,6 +76,7 @@ class ApplicationObserver
      */
     public function forceDeleted(Application $application)
     {
+        Log::info("Application forcedDeleted $application->name ... $application->slug");
         //
     }
 }

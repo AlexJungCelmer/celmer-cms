@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $apps = \App\Models\Application::factory(2)->hasUsers(2)->create();
-        $collections = \App\Models\Collection::factory(2)->forApplication()->create();
+        // $collections = \App\Models\Collection::factory(2)->forApplication()->create();
         // $apps_user = \App\Models\User::factory(2)->hasApplications()->create();
         // $apps = \App\Models\Application::get();
         // foreach ($apps as $value) {

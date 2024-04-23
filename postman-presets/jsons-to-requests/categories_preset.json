@@ -1,0 +1,22 @@
+[
+    {
+        "name": "title",
+        "label": "Title",
+        "type": "text",
+        "options": {
+            "type": "text",
+            "nullable": false
+        },
+        "order": null
+    },
+    {
+        "name": "test",
+        "label": "Test",
+        "type": "number",
+        "options": {
+            "type": "integer",
+            "nullable": true
+        },
+        "order": null
+    }
+]

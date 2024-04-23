@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use \App\Models\Application;
 use \App\Models\Collection;
+use Illuminate\Support\Facades\Log;
+use App\Modules\RelationModule;
 
 class ApplicationController extends Controller
 {
@@ -37,10 +39,21 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $request->validate([
+                'name' => ['required'],
+                'slug' => ['required','unique:applications,slug'],
+            ]);
+        Log::info("App request valid");
+        } catch (\Illuminate\Validation\ValidationException $th) {
+            return $th->validator->errors();
+        }
+
         $app = new Application();
         $app->name = $request->name;
-        $app->slug = str_slug($request->name, '_');
+        $app->slug = str_slug($request->slug, '-');
         $app->save();
+        return $app;
     }
 
     /**
@@ -52,9 +65,13 @@ class ApplicationController extends Controller
     public function show(Request $request)
     {
         //
+        
         $user = $request->user();
-        if ($user->tokenCan('*') && $user->is_admin) {
-            return Application::where('slug', $request->slug)->firstOrFail()->with('users')->firstOrFail();
+        if ($user->is_admin) {
+            $app = Application::where('slug', $request->slug)->firstOrFail();
+            $app['users'] = $app->users()->get();
+            return $app;
+            
         }
         
         return Application::where('slug', $request->slug)->firstOrFail();
